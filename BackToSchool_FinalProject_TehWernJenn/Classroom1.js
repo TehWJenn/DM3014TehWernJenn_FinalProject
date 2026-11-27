@@ -1,9 +1,10 @@
 const classroomNextButton = { x: 412, y: 630, w: 300, h: 44 };
 
+//telling what scene next after each classroom
 const classroomQuizzes = {
-  classroom1: { asset: 'Cclassroom.png', size: 5, spacing: 66, next: 'study2' },
-  classroom2: { asset: 'Dclassroom.png', size: 10, spacing: 42, next: 'study3' },
-  classroom3: { asset: 'Bclassroom.png', size: 30, spacing: 14, next: null }
+  classroom1: { asset: 'Cclassroom.png', size: 3, spacing: 84, next: 'study2' },
+  classroom2: { asset: 'Dclassroom.png', size: 5, spacing: 66, next: 'study3' },
+  classroom3: { asset: 'Bclassroom.png', size: 10, spacing: 42, next: 'ending' }
 };
 
 async function loadClassrooms() {
@@ -32,17 +33,11 @@ function drawClassroom(quiz) {
   fill('#262120');
   textSize(28);
 
-  if (quiz.finished) {
-    text('Final quiz complete!', width / 2, height / 2);
-    pop();
-    cursor(ARROW);
-    return;
-  }
-
-  text(quiz.next ? 'Pop Quiz' : 'Final Quiz', width / 2, 125);
+  text(quiz.next === 'ending' ? 'Final Quiz' : 'Pop Quiz', width / 2, 125);
   textSize(17);
   text('Select all circles · ' + quiz.selected.size + '/' + total, width / 2, 165);
 
+  // creating the grid to select the answers 
   const gridSize = quiz.size * quiz.spacing;
   const gridX = (width - gridSize) / 2;
   const dotSize = Math.min(30, quiz.spacing - 4);
@@ -67,7 +62,7 @@ function drawClassroom(quiz) {
   fill(ready ? '#e1b2ff' : '#ded9d3');
   rect(button.x, button.y, button.w, button.h, 10);
   fill('#262120');
-  text(quiz.next ? 'Lock in and continue' : 'Finish quiz',
+  text(quiz.next === 'ending' ? 'Finish quiz' : 'Lock in and continue',
     button.x + button.w / 2, button.y + button.h / 2);
 
   pop();
@@ -84,15 +79,9 @@ function hoveredAnswer(quiz) {
 }
 
 function clickClassroom(quiz) {
-  if (quiz.finished) return;
-
   if (inside(mouseX, mouseY, classroomNextButton)) {
     if (quiz.selected.size !== quiz.size * quiz.size) return;
-    if (quiz.next) {
-      scene = quiz.next;
-    } else {
-      quiz.finished = true;
-    }
+    scene = quiz.next;
     return;
   }
 

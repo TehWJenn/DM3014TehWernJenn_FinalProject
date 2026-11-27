@@ -1,7 +1,8 @@
 /* TEH WERN JENN_FINAL PROJECT_ BACKTOSCHOOL GAME
 
 Things Learnt:
-- how to set up the canvas in style so that it keeps its shape and same ratios of the orginal image bg while staying int he middle of the screen
+- how to set up the canvas in style so that it keeps its shape and same ratios of the orginal image bg while staying in the middle of the screen
+- adding a pop up image like a web page but slighlty different  more of a note pad styel
 */
 
 body {
@@ -57,9 +58,49 @@ canvas {
 :is(#notepad-popup, #notepad-popup-study2, #notepad-popup-study3) button:hover {
   background: #e1b2ff;
 }
-/* canvas {
-  display: block;
-  width: min(1123px, 100vw, calc(100vh * 1123 / 794)) !important;
-  height: auto !important;
-  aspect-ratio: 1123 / 794;
-} */
+
+/* changing the colours of the notes to fit the scene theme as it gets duller */
+#notepad-popup-study2,
+#notepad-popup-study2 textarea {
+  background: #e7d8ab;
+}
+
+#notepad-popup-study3,
+#notepad-popup-study3 textarea {
+  background: #d7d7d7;
+}
+
+#notepad-popup-study2 button {
+  background: #e2dce4;
+  box-shadow: 0 2px #625567;
+}
+
+#notepad-popup-study3 button {
+  background: #e5e5e5;
+  box-shadow: 0 2px #555555;
+}
+
+#notepad-popup-study2 button:hover {
+  background: #c8b8ce;
+}
+
+#notepad-popup-study3 button:hover {
+  background: #c5c5c5;
+}
+
+#notepad-popup-study2 {
+  border-color: #625567;
+}
+
+#notepad-popup-study3 {
+  border-color: #555555;
+}
+
+/* so that the outline of the nots text box is fitted to the scene theme colour */
+#notepad-popup-study2 textarea:focus {
+  outline: 2px solid #625567;
+}
+
+#notepad-popup-study3 textarea:focus {
+  outline: 2px solid #555555;
+}

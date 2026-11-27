@@ -57,9 +57,9 @@ function drawStudyDesk(deskImage, notes, state) {
 
   if (!openNote) {
     if (showNext) {
-      drawStudyNextButton();
+      drawStudyNextButton(state.palette);
     } else {
-      drawStudyLabel();
+      drawStudyLabel(state.palette);
     }
     return;
   }
@@ -89,7 +89,7 @@ function drawStudyDesk(deskImage, notes, state) {
   text(openNote.title, x + 20, y + 36, 260);
 
   // Message location
-  textAlign(LEFT, CENTER);
+  textAlign(openNote.centerMessage ? CENTER : LEFT, CENTER);
   textSize(16);
   text(openNote.message ?? '', x + 20, y + 90, 260, 100);   // text is not message is undefined '??' use ' ' empty 
 
@@ -97,11 +97,11 @@ function drawStudyDesk(deskImage, notes, state) {
   const button = { x: x + 20, y: y + 242, w: 150, h: 38 };
   const hover = inside(mouseX, mouseY, button);
   // Shadow
-  fill('#38264d');
+  fill(state.palette?.shadow ?? '#38264d');
   rect(button.x, button.y + 2, button.w, button.h, 12);
 
   // Button
-  fill(hover ? '#e1b2ff' : '#ffffff');
+  fill(hover ? (state.palette?.hover ?? '#e1b2ff') : (state.palette?.button ?? '#ffffff'));
   rect(button.x, button.y, button.w, button.h, 12);
 
   // Label
@@ -133,11 +133,10 @@ function openLaptopTab(state) {
   const nextReading = state.readingWindows.length;
   if (nextReading === state.links.length) return;
 
-  const popup = window.open('', '_blank', 'popup,width=480,height=600');
+  const popup = window.open(state.links[nextReading], '_blank', 'popup,width=480,height=600');
   if (!popup) return;
 
   popup.opener = null;
-  popup.location.href = state.links[nextReading];
   state.readingWindows.push(popup);
 }
 
@@ -187,11 +186,11 @@ function studyIsDone(state) {
     !isReadingWindowOpen(state);
 }
 
-function drawStudyLabel() {
+function drawStudyLabel(palette) {
   push();
   rectMode(CORNER);
   noStroke();
-  fill('#f5ddb7');
+  fill(palette?.label ?? '#f5ddb7');
   rect(width / 2 - 150, 718, 300, 62, 12);
   fill('#262120');
   textFont('Chalkboard SE');
@@ -203,14 +202,14 @@ function drawStudyLabel() {
 
 const studyNextButton = { x: 461, y: 725, w: 200, h: 45 };
 
-function drawStudyNextButton() {
+function drawStudyNextButton(palette) {
   const button = studyNextButton;
   const hover = inside(mouseX, mouseY, button);
 
   push();
   rectMode(CORNER);
   noStroke();
-  fill(hover ? '#a7a7a7' : '#ffffff');
+  fill(hover ? (palette?.hover ?? '#a7a7a7') : (palette?.button ?? '#ffffff'));
   rect(button.x, button.y, button.w, button.h, 12);
 
   fill('#262120');

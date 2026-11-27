@@ -36,7 +36,9 @@ function drawWalkScene() {
 
   if (!finished && round.slideBack > 0) {
     // Pull toward the house whether the mouse is held or released.
-    characterX = max(houseX, characterX - round.slideBack * seconds);
+    if (characterX < schoolX) {
+      characterX = max(houseX, characterX - round.slideBack * seconds);
+    }
   } else if (dragging && round.speed === Infinity) {
     characterX = constrain(mouseX - grabOffsetX, houseX, schoolX);
   } else if (dragging) {
@@ -73,11 +75,13 @@ function pressWalk() {
 }
 
 function dragWalk() {
-  if (!dragging || rounds[roundIndex].slideBack === 0) return;
+  if (!dragging || rounds[roundIndex].slideBack === 0 || characterX === schoolX) return;
 
   const pull = (mouseX - lastMouseX) * finalPullMultiplier;
   characterX = constrain(characterX + pull, houseX, schoolX);
   lastMouseX = mouseX;
+
+  if (characterX >= schoolX - arrivalDistance) characterX = schoolX;
 }
 
 function releaseWalk(onArrival) {
@@ -88,7 +92,7 @@ function releaseWalk(onArrival) {
 
   if (round.speed === Infinity) {
     characterX = constrain(mouseX - grabOffsetX, houseX, schoolX);
-  } else if (round.slideBack > 0) {
+  } else if (round.slideBack > 0 && characterX < schoolX) {
     const pull = (mouseX - lastMouseX) * finalPullMultiplier;
     characterX = constrain(characterX + pull, houseX, schoolX);
   }

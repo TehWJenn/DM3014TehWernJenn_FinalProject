@@ -7,10 +7,8 @@ async function loadWalk3() {
   return {
     backdrop,
     sprite,
-    // Visible character bounds when the sprite PNG is drawn at canvas size.
     bounds: { x: 579, y: 584, w: 73, h: 105 },
-    // Movement values are in pixels per second.
     speed: 170,
-    slideBack: 150
+    slideBack: 150 // slide back addeed to reflect the idea of not wanting to go to school it keeps running back as you let go of it.
   };
 }
