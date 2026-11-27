@@ -21,20 +21,16 @@ To Start, a challenge I faced in the beginning was trying to transition using th
 
 I thought that since I am already coding in p5.js I should code it on the web, I realised coding on my laptop thorough VS code was a much seamless option instead and decided to move to the new file on my laptop. Learnt in this process how set up my own p5.js file with the P5.js library as I did not know to initally, references the example weekly setup codes.
 
+I feel like I was able to slightly get the outcome I like as i got it to feel dull and boring as you play it. it gets more and more tiring and more longer to do/ slightly harder. However I worry it might be too repetitive which in a way is not bad as the goal is to make the person feel drained. though I still feel I should add some new interactions to make it harder?. 
 
-
-
-
-
-3. Credit any third-party resources (e.g. code, data) you used and state which aspects of the project are your own work.
-
+A hard part was trying to get the scenes to work togther, initally i wanted to put it all in one js script but felt it was too confuing to code in one for all scenes so i spread them out.
 
 
 
 4. How to Run the Project:
 
-Open the Link to the P5.js page of the project, click the play button shown on the screen and Press the game to start!.
-Try the game yourself out using common game mechanics and figure out how to survive and get through to the end of the game!
+Open the Link to the web page page of the project, click the play button shown on the screen and Press the game to start!.
+Try the game yourself out using common game mechanics like click and drag and figure out how to get through to the end of the game!
 
 
 

@@ -1,8 +1,12 @@
-let intro;
-let rounds;
-let roundIndex = -1; // -1 means the intro is showing.
 
-const startButton = { x: 348, y: 493, w: 391, h: 180 };
+// adding animaiton to the wlakign scene at the top 
+let rounds;
+let walkingFrames;
+let walkingTime = 0;
+const walkingFrameCount = 21;
+const walkingFrameDuration = 62;
+let roundIndex = 0;
+
 const houseX = 168.5;
 const schoolX = 984;
 const feetY = 694;
@@ -15,72 +19,18 @@ let grabOffsetX = 0;
 let lastMouseX = 0;
 let finished = false;
 
-async function setup() {
-  createCanvas(1123, 794);
+async function loadWalkScene() {
+  const frames = Array.from({ length: walkingFrameCount }, (_, index) =>
+    loadImage('assets/walk-frames/frame-' + (index + 1) + '.png')
+  );
 
-  const [introImage, cWalk, happyWalk, dWalk, midWalk, greyWalk, dontWalk] =
-    await Promise.all([
-      loadImage('assets/intro.png'),
-      loadImage('assets/Cwalkschool.png'),
-      loadImage('assets/happy walk.png'),
-      loadImage('assets/Dwalkschool.png'),
-      loadImage('assets/midwalk.png'),
-      loadImage('assets/walkschoolbg.png'),
-      loadImage('assets/Dontwalk.png')
-    ]);
-
-  intro = introImage;
-
-  // Bounds of each visible figure when its PNG is drawn at canvas size.
-  // Speed and slideBack are measured in pixels per second.
-  rounds = [
-    {
-      backdrop: cWalk,
-      sprite: happyWalk,
-      bounds: { x: 296, y: 576, w: 65, h: 118 },
-      speed: 700,
-      slideBack: 0
-    },
-    {
-      backdrop: dWalk,
-      sprite: midWalk,
-      bounds: { x: 455, y: 583, w: 45, h: 108 },
-      speed: 200,
-      slideBack: 0
-    },
-    {
-      backdrop: greyWalk,
-      sprite: dontWalk,
-      bounds: { x: 579, y: 584, w: 73, h: 105 },
-      speed: 170,
-      slideBack: 150
-    }
-  ];
+  [rounds, walkingFrames] = await Promise.all([
+    Promise.all([loadWalk1(), loadWalk2(), loadWalk3()]),
+    Promise.all(frames)
+  ]);
 }
 
-function draw() {
-  background(220);
-
-  if (!rounds) return;
-
-  if (roundIndex === -1) {
-    image(intro, 0, 0, width, height);
-
-    push();
-    textFont('Go around the books');
-    textStyle(BOLD);
-    textSize(100);
-    textAlign(CENTER, CENTER);
-    fill(0);
-    translate(width / 2, height / 3);
-    rotate(sin(millis() / 50) * 0.08);
-    text('Do it again!', 0, 0);
-    pop();
-
-    cursor(inside(mouseX, mouseY, startButton) ? HAND : ARROW);
-    return;
-  }
-
+function drawWalkScene() {
   const round = rounds[roundIndex];
   const seconds = min(deltaTime, 50) / 1000;
 
@@ -96,23 +46,25 @@ function draw() {
     characterX += constrain(targetX - characterX, -step, step);
   }
 
-  const { x, y, w, h } = round.bounds;
   image(round.backdrop, 0, 0, width, height);
+
+  const frameIndex = Math.floor(walkingTime / walkingFrameDuration);
+  const frame = walkingFrames[frameIndex];
+  const animationWidth = width -10 ;
+  const animationHeight = height -10;
+  const animationX = (width - animationWidth) / 2;
+  const animationY = height * 0.07 - 45;
+  image(frame, animationX, animationY, animationWidth, animationHeight);
+  const loopDuration = walkingFrameDuration * walkingFrames.length;
+  walkingTime = (walkingTime + deltaTime) % loopDuration;
+
+  const { x, y, w, h } = round.bounds;
   image(round.sprite, characterX - x - w / 2, feetY - y - h, width, height);
 
   cursor(!finished && (dragging || overCharacter()) ? 'ew-resize' : ARROW);
 }
 
-function mousePressed() {
-  if (!rounds) return;
-
-  if (roundIndex === -1) {
-    if (inside(mouseX, mouseY, startButton)) {
-      roundIndex = 0;
-    }
-    return;
-  }
-
+function pressWalk() {
   if (!finished && overCharacter()) {
     dragging = true;
     grabOffsetX = mouseX - characterX;
@@ -120,7 +72,7 @@ function mousePressed() {
   }
 }
 
-function mouseDragged() {
+function dragWalk() {
   if (!dragging || rounds[roundIndex].slideBack === 0) return;
 
   const pull = (mouseX - lastMouseX) * finalPullMultiplier;
@@ -128,7 +80,7 @@ function mouseDragged() {
   lastMouseX = mouseX;
 }
 
-function mouseReleased() {
+function releaseWalk(onArrival) {
   if (!dragging) return;
   dragging = false;
 
@@ -143,6 +95,7 @@ function mouseReleased() {
 
   if (characterX < schoolX - arrivalDistance) return;
 
+  const arrival = roundIndex + 1;
   if (roundIndex < rounds.length - 1) {
     roundIndex++;
     characterX = houseX;
@@ -150,6 +103,7 @@ function mouseReleased() {
     characterX = schoolX;
     finished = true;
   }
+  onArrival(arrival);
 }
 
 function overCharacter() {
@@ -160,9 +114,4 @@ function overCharacter() {
     w,
     h
   });
-}
-
-function inside(x, y, box) {
-  return x >= box.x && x <= box.x + box.w &&
-         y >= box.y && y <= box.y + box.h;
 }
